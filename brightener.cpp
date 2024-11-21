@@ -1,16 +1,12 @@
 #include "./brightener.h"
 #include <utility>
 
-ImageBrightener::ImageBrightener(std::unique_ptr<Image> inputImage)
+ImageBrightener::ImageBrightener(std::shared_ptr<Image> inputImage)
     : m_inputImage(std::move(inputImage)) {
 }
 
 bool ImageBrightener::ValidateImage() {
-    if (m_inputImage->m_columns <= 1024 && m_inputImage->m_rows <= 1024) {
-        return true;
-    } else {
-        return false;
-    }
+    return m_inputImage->Validate();
 }
 
 int ImageBrightener::BrightenWholeImage() {
@@ -23,8 +19,8 @@ int ImageBrightener::BrightenWholeImage() {
             if (m_inputImage->GetPixel(x, y) > (255 - 25)) {
                 ++attenuatedPixelCount;
                 m_inputImage->SetPixel(x, y, 255);
-            } else {
-                int pixelIndex = x * m_inputImage->m_columns + y;
+            }
+            else {
                 m_inputImage->SetPixel(x, y, m_inputImage->GetPixel(x, y) + 25);
             }
         }

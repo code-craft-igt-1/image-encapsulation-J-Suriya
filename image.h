@@ -1,23 +1,23 @@
 #pragma once
-#include <cstdint>
-#include <iostream>
-#include <memory>
+#include <vector>
 
-class Image {
- public:
-    Image(uint16_t rows, uint16_t columns): m_rows(rows), m_columns(columns) {
-        pixels = std::make_unique<uint8_t[]>(rows * columns);
+struct Image {
+    int m_rows;
+    int m_columns;
+    std::vector<std::vector<int>> m_pixels; // Assuming a 2D vector for pixel data
+
+    Image(int rows, int columns) : m_rows(rows), m_columns(columns), m_pixels(rows, std::vector<int>(columns)) {}
+
+    bool Validate() const {
+        return m_columns <= 1024 && m_rows <= 1024;
     }
-    ~Image() {
-        std::cout << "Image destroyed. Pixel memory automatically freed.\n";
+
+    int GetPixel(int x, int y) const {
+        return m_pixels[x][y];
     }
-    uint8_t GetPixel(uint16_t x, uint16_t y) const {
-        return pixels[x * m_columns + y];
+
+    void SetPixel(int x, int y, int value) {
+        m_pixels[x][y] = value;
     }
-    void SetPixel(uint16_t x, uint16_t y, uint8_t value) {
-        pixels[x * m_columns + y] = value;
-    }
-    const uint16_t m_rows;
-    const uint16_t m_columns;
-    std::unique_ptr<uint8_t[]> pixels;  // max 1k x 1k image
+
 };
